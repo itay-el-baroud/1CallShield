@@ -29,7 +29,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text("الإعدادات") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -43,18 +43,18 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 .padding(padding)
         ) {
             // Smart Block Section
-            SettingsSection(title = "Smart Block") {
+            SettingsSection(title = "الحظر الذكي") {
                 SettingsSwitchItem(
                     icon = Icons.Default.Security,
-                    title = "Auto-block spam numbers",
-                    subtitle = "Block known spam numbers automatically",
+                    title = "حظر الأرقام المزعجة تلقائياً",
+                    subtitle = "حظر الأرقام المعروفة كمزعجة تلقائياً",
                     checked = settings?.autoBlockSpam ?: false,
                     onCheckedChange = { viewModel.updateAutoBlockSpam(context, it) }
                 )
                 SettingsSwitchItem(
                     icon = Icons.Default.Phone,
-                    title = "Auto-block after X attempts",
-                    subtitle = "Block numbers that call more than threshold",
+                    title = "الحظر التلقائي بعد محاولات متكررة",
+                    subtitle = "حظر الأرقام التي تتصل أكثر من الحد المسموح",
                     checked = settings?.autoBlockAfterAttempts ?: false,
                     onCheckedChange = { viewModel.updateAutoBlockAfterAttempts(context, it) }
                 )
@@ -65,7 +65,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                             val threshold = it.toIntOrNull() ?: 5
                             viewModel.updateAttemptThreshold(context, threshold)
                         },
-                        label = { Text("Attempt threshold") },
+                        label = { Text("عدد المحاولات المسموحة") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
@@ -75,29 +75,36 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             }
 
             // Do Not Disturb Section
-            SettingsSection(title = "Do Not Disturb") {
+            SettingsSection(title = "وضع عدم الإزعاج") {
                 SettingsSwitchItem(
                     icon = Icons.Default.Notifications,
-                    title = "Block unknown numbers only",
-                    subtitle = "Allow only contacts",
+                    title = "حظر الأرقام غير المعروفة فقط",
+                    subtitle = "السماح لجهات الاتصال فقط",
                     checked = settings?.blockUnknownOnly ?: false,
                     onCheckedChange = { viewModel.updateBlockUnknownOnly(context, it) }
                 )
             }
 
             // Appearance Section
-            SettingsSection(title = "Appearance") {
+            SettingsSection(title = "المظهر") {
                 SettingsSwitchItem(
                     icon = Icons.Default.DarkMode,
-                    title = "Dark Mode",
-                    subtitle = "Enable dark theme",
+                    title = "الوضع الليلي",
+                    subtitle = "تفعيل الوضع الليلي",
                     checked = settings?.darkMode ?: false,
                     onCheckedChange = { viewModel.updateDarkMode(context, it) }
+                )
+                SettingsSwitchItem(
+                    icon = Icons.Default.DarkMode,
+                    title = "اتباع نظام الجهاز",
+                    subtitle = "تغيير الوضع حسب إعدادات الجهاز",
+                    checked = settings?.followSystem ?: false,
+                    onCheckedChange = { viewModel.updateFollowSystem(context, it) }
                 )
             }
 
             // Danger Zone
-            SettingsSection(title = "Danger Zone") {
+            SettingsSection(title = "منطقة الخطر") {
                 Button(
                     onClick = { viewModel.clearAllData(context) },
                     modifier = Modifier
@@ -105,7 +112,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         .padding(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BlockRed)
                 ) {
-                    Text("Clear All Data")
+                    Text("مسح جميع البيانات")
                 }
             }
         }
