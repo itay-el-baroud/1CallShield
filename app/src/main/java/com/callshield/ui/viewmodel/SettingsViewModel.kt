@@ -201,6 +201,14 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun enableAccessibilityService(context: Context) {
+        AccessibilityUtils.openAccessibilitySettings(context)
+    }
+    
+    fun openAccessibilitySettings(context: Context) {
+        AccessibilityUtils.openAccessibilitySettings(context)
+    }
+
     fun clearAllData(context: Context) {
         viewModelScope.launch {
             val db = AppDatabase.getDatabase(context)
