@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.callshield.data.BlockedNumber
 import com.callshield.ui.theme.BlockRed
+import com.callshield.ui.theme.WarningOrange
 import com.callshield.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +24,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val context = LocalContext.current
     val blockedNumbers by viewModel.blockedNumbers.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
+    val pinnedNumbers by viewModel.pinnedNumbers.collectAsState()
     var showDeleteDialog by remember { mutableStateOf<BlockedNumber?>(null) }
+    var showAnalysisDialog by remember { mutableStateOf<BlockedNumber?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadBlockedNumbers(context)
@@ -90,6 +90,32 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Pinned Numbers Section
+            if (pinnedNumbers.isNotEmpty()) {
+                Text(
+                    "الأرقام الأكثر إزعاجاً",
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    color = WarningOrange
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                LazyColumn(
+                    modifier = Modifier.heightIn(max = 200.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(pinnedNumbers) { number ->
+                        BlockedNumberCard(
+                            number = number,
+                            onDelete = { showDeleteDialog = number },
+                            onAnalysis = { showAnalysisDialog = number },
+                            isPinned = true
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             // Blocked Numbers List
             if (blockedNumbers.isEmpty()) {
                 Box(
@@ -120,7 +146,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     items(blockedNumbers) { number ->
                         BlockedNumberCard(
                             number = number,
-                            onDelete = { showDeleteDialog = number }
+                            onDelete = { showDeleteDialog = number },
+                            onAnalysis = { showAnalysisDialog = number },
+                            isPinned = false
                         )
                     }
                 }
@@ -151,6 +179,33 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
             }
         )
     }
+
+    // Analysis Dialog
+    showAnalysisDialog?.let { number ->
+        AlertDialog(
+            onDismissRequest = { showAnalysisDialog = null },
+            title = { Text("تحليل الإزعاج") },
+            text = {
+                Column {
+                    Text("الرقم: ${number.phoneNumber}")
+                    Text("عدد المحاولات: ${number.callAttempts}")
+                    Text("آخر محاولة: ${if (number.lastAttemptTime != null) "منذ قليل" else "لا يوجد"}")
+                    if (number.callAttempts > 10) {
+                        Text(
+                            "هذا الرقم مزعج جداً! تحب تحظره نهائياً؟",
+                            color = BlockRed,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = { showAnalysisDialog = null }) {
+                    Text("فهمت")
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -177,11 +232,18 @@ private fun StatItem(
 @Composable
 private fun BlockedNumberCard(
     number: BlockedNumber,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onAnalysis: () -> Unit,
+    isPinned: Boolean
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isPinned) 4.dp else 2.dp),
+        colors = if (isPinned) {
+            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+        } else {
+            CardDefaults.cardColors()
+        }
     ) {
         Row(
             modifier = Modifier
@@ -212,9 +274,16 @@ private fun BlockedNumberCard(
                     Text(
                         text = "${number.callAttempts} محاولات",
                         style = MaterialTheme.typography.labelSmall,
-                        color = BlockRed
+                        color = if (isPinned) BlockRed else WarningOrange
                     )
                 }
+            }
+            IconButton(onClick = onAnalysis) {
+                Icon(
+                    Icons.Default.Analytics,
+                    contentDescription = "تحليل",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
             IconButton(onClick = onDelete) {
                 Icon(
