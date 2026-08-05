@@ -90,5 +90,14 @@
     <string name="tour_logs_desc">تابع جميع المحاولات المحظورة وتحليلاتها</string>
     <string name="tour_settings_title">الإعدادات</string>
     <string name="tour_settings_desc">خصص التطبيق حسب احتياجاتك</string>
+    
+    <!-- Permission Names -->
+    <string name="permission_phone">المكالمات</string>
+    <string name="permission_phone_desc">حظر المكالمات الواردة</string>
+    <string name="permission_sms">الرسائل</string>
+    <string name="permission_sms_desc">حظر الرسائل المزعجة</string>
+    <string name="permission_contacts">جهات الاتصال</string>
+    <string name="permission_contacts_desc">التحقق من الأرقام المعروفة</string>
+    <string name="permission_notifications">الإشعارات</string>
+    <string name="permission_notifications_desc">إشعارات المحاولات المحظورة</string>
 </resources>
-        
