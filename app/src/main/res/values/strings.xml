@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">CallShield</string>
-    
-    <!-- Home Screen -->
+    <!--  Home Screen  -->
     <string name="home_title">CallShield</string>
     <string name="search_hint">ابحث في الأرقام المحظورة...</string>
     <string name="blocked_count">محظور</string>
@@ -9,8 +8,7 @@
     <string name="no_blocked_numbers">لا توجد أرقام محظورة بعد</string>
     <string name="most_annoying">الأرقام الأكثر إزعاجاً</string>
     <string name="analysis">تحليل</string>
-    
-    <!-- Add Block Screen -->
+    <!--  Add Block Screen  -->
     <string name="add_block_title">حظر رقم جديد</string>
     <string name="phone_number_hint">رقم الهاتف *</string>
     <string name="display_name_hint">الاسم (اختياري)</string>
@@ -26,16 +24,14 @@
     <string name="block_button">حظر الرقم</string>
     <string name="block_success">تم حظر الرقم بنجاح!</string>
     <string name="ok">موافق</string>
-    
-    <!-- Categories -->
+    <!--  Categories  -->
     <string name="category_spam">مزعج</string>
     <string name="category_harassment">تحرش</string>
     <string name="category_work">عمل</string>
     <string name="category_personal">شخصي</string>
     <string name="category_unknown">غير معروف</string>
     <string name="category_ads">إعلانات</string>
-    
-    <!-- Logs Screen -->
+    <!--  Logs Screen  -->
     <string name="logs_title">سجل المكالمات</string>
     <string name="analysis_title">تحليل</string>
     <string name="total_blocked_calls">إجمالي المكالمات المحظورة</string>
@@ -44,8 +40,7 @@
     <string name="last_24_hours">آخر 24 ساعة</string>
     <string name="no_logs_yet">لا يوجد سجلات بعد</string>
     <string name="new_label">جديد</string>
-    
-    <!-- Settings Screen -->
+    <!--  Settings Screen  -->
     <string name="settings_title">الإعدادات</string>
     <string name="smart_block_title">الحظر الذكي</string>
     <string name="auto_block_spam">حظر الأرقام المزعجة تلقائياً</string>
@@ -79,20 +74,17 @@
     <string name="import_list">استيراد القائمة</string>
     <string name="danger_zone_title">منطقة الخطر</string>
     <string name="clear_all_data">مسح جميع البيانات</string>
-    
-    <!-- Delete Dialog -->
+    <!--  Delete Dialog  -->
     <string name="remove_block_title">إلغاء الحظر</string>
     <string name="remove_block_message">هل أنت متأكد من إلغاء حظر %s؟</string>
     <string name="unblock">إلغاء الحظر</string>
     <string name="cancel">إلغاء</string>
-    
-    <!-- Bottom Navigation -->
+    <!--  Bottom Navigation  -->
     <string name="nav_home">الرئيسية</string>
     <string name="nav_add">إضافة</string>
     <string name="nav_logs">السجلات</string>
     <string name="nav_settings">الإعدادات</string>
-    
-    <!-- Onboarding -->
+    <!--  Onboarding  -->
     <string name="welcome_title">مرحباً بك في CallShield</string>
     <string name="welcome_desc">حمايتك من المكالمات والرسائل المزعجة</string>
     <string name="permissions_title">الأذونات المطلوبة</string>
@@ -109,16 +101,20 @@
     <string name="tour_logs_desc">تابع جميع المحاولات المحظورة وتحليلاتها</string>
     <string name="tour_settings_title">الإعدادات</string>
     <string name="tour_settings_desc">خصص التطبيق حسب احتياجاتك</string>
-    
-    <!-- Biometric -->
+    <!--  Biometric  -->
     <string name="biometric_title">CallShield محمي</string>
     <string name="biometric_subtitle">استخدم بصمة إصبعك للوصول إلى قائمة المحظورين</string>
     <string name="biometric_button">فتح بالبصمة</string>
-    
-    <!-- Analysis -->
+    <!--  Analysis  -->
     <string name="analysis_dialog_title">تحليل الإزعاج</string>
     <string name="analysis_attempts">عدد المحاولات</string>
     <string name="analysis_last_attempt">آخر محاولة</string>
     <string name="analysis_very_annoying">هذا الرقم مزعج جداً! تحب تحظره نهائياً؟</string>
     <string name="analysis_understood">فهمت</string>
+
+    <string name="accessibility_service_description">CallShield - خدمة حظر المكالمات المزعجة تلقائياً</string>
+    <string name="accessibility_title">تفعيل حظر المكالمات الحقيقي</string>
+    <string name="accessibility_desc">مطلوب لحظر المكالمات فعلياً (إمكانية الوصول)</string>
+    <string name="accessibility_required">لحظر المكالمات فعلياً، لازم تفعل خدمة إمكانية الوصول</string>
+    <string name="open_settings">افتح الإعدادات وفعل الخدمة</string>
 </resources>
