@@ -9,8 +9,10 @@ data class CallLog(
     val id: Int = 0,
     val phoneNumber: String,
     val displayName: String = "",
-    val callType: String = "blocked",
+    val callType: String = "blocked", // blocked_call, blocked_sms, incoming_call
     val timestamp: Long = System.currentTimeMillis(),
     val duration: Int = 0,
-    val isRead: Boolean = false
+    val isRead: Boolean = false,
+    val messageContent: String = "", // For SMS messages
+    val simSlot: Int = -1
 )
