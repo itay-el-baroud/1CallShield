@@ -30,13 +30,23 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
     var tempDuration by remember { mutableStateOf("1 hour") }
     var showSuccess by remember { mutableStateOf(false) }
 
-    val categories = listOf("spam", "harassment", "work", "personal", "unknown")
-    val tempOptions = listOf("1 hour", "1 day", "1 week")
+    val categories = listOf(
+        "spam" to "مزعج",
+        "harassment" to "تحرش",
+        "work" to "عمل",
+        "personal" to "شخصي",
+        "unknown" to "غير معروف"
+    )
+    val tempOptions = listOf(
+        "1 hour" to "ساعة واحدة",
+        "1 day" to "يوم واحد",
+        "1 week" to "أسبوع واحد"
+    )
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Block Number") },
+                title = { Text("حظر رقم جديد") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -45,7 +55,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                     IconButton(onClick = { /* Handle back */ }) {
                         Icon(
                             Icons.Default.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = "رجوع",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -64,7 +74,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { phoneNumber = it },
-                label = { Text("Phone Number *") },
+                label = { Text("رقم الهاتف *") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
@@ -74,7 +84,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
             OutlinedTextField(
                 value = displayName,
                 onValueChange = { displayName = it },
-                label = { Text("Display Name (Optional)") },
+                label = { Text("الاسم (اختياري)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -83,28 +93,28 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
             OutlinedTextField(
                 value = label,
                 onValueChange = { label = it },
-                label = { Text("Label (Optional)") },
+                label = { Text("اللقب (اختياري)") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
 
             // Category
-            Text("Category", style = MaterialTheme.typography.titleSmall)
+            Text("التصنيف", style = MaterialTheme.typography.titleSmall)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                categories.forEach { category ->
+                categories.forEach { (key, name) ->
                     FilterChip(
-                        selected = selectedCategory == category,
-                        onClick = { selectedCategory = category },
-                        label = { Text(category.replaceFirstChar { it.uppercase() }) }
+                        selected = selectedCategory == key,
+                        onClick = { selectedCategory = key },
+                        label = { Text(name) }
                     )
                 }
             }
 
             // Block Options
-            Text("Block Options", style = MaterialTheme.typography.titleSmall)
+            Text("خيارات الحظر", style = MaterialTheme.typography.titleSmall)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -114,14 +124,14 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                         checked = blockCalls,
                         onCheckedChange = { blockCalls = it }
                     )
-                    Text("Calls")
+                    Text("المكالمات")
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = blockSms,
                         onCheckedChange = { blockSms = it }
                     )
-                    Text("SMS")
+                    Text("الرسائل")
                 }
             }
 
@@ -134,23 +144,23 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                     checked = isTemporary,
                     onCheckedChange = { isTemporary = it }
                 )
-                Text("Temporary Block")
+                Text("حظر مؤقت")
             }
 
             if (isTemporary) {
                 SingleChoiceSegmentedButtonRow(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    tempOptions.forEachIndexed { index, option ->
+                    tempOptions.forEachIndexed { index, (key, name) ->
                         SegmentedButton(
                             shape = SegmentedButtonDefaults.itemShape(
                                 index = index,
                                 count = tempOptions.size
                             ),
-                            onClick = { tempDuration = option },
-                            selected = tempDuration == option
+                            onClick = { tempDuration = key },
+                            selected = tempDuration == key
                         ) {
-                            Text(option)
+                            Text(name)
                         }
                     }
                 }
@@ -184,7 +194,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
             ) {
                 Icon(Icons.Default.Save, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Block Number")
+                Text("حظر الرقم")
             }
         }
 
@@ -194,11 +204,11 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 modifier = Modifier.padding(16.dp),
                 action = {
                     TextButton(onClick = { showSuccess = false }) {
-                        Text("OK")
+                        Text("موافق")
                     }
                 }
             ) {
-                Text("Number blocked successfully!")
+                Text("تم حظر الرقم بنجاح!")
             }
         }
     }
