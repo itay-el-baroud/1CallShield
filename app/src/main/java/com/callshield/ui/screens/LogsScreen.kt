@@ -34,7 +34,7 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Call Logs") },
+                title = { Text("سجل المكالمات") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -58,15 +58,15 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        "Analysis",
+                        "تحليل",
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     stats?.let { s ->
-                        Text("Total blocked calls: ${s.totalCalls}")
-                        Text("Total blocked SMS: ${s.totalSms}")
-                        Text("Most active number: ${s.mostActiveNumber ?: "None"}")
-                        Text("Last 24 hours: ${s.last24Hours} attempts")
+                        Text("إجمالي المكالمات المحظورة: ${s.totalCalls}")
+                        Text("إجمالي الرسائل المحظورة: ${s.totalSms}")
+                        Text("أكثر رقم نشاطاً: ${s.mostActiveNumber ?: "لا يوجد"}")
+                        Text("آخر 24 ساعة: ${s.last24Hours} محاولات")
                     }
                 }
             }
@@ -86,7 +86,7 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "No logs yet",
+                            "لا يوجد سجلات بعد",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -109,7 +109,7 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
 
 @Composable
 private fun LogItem(log: CallLog) {
-    val dateFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("dd MMM, HH:mm", Locale("ar"))
     val dateStr = dateFormat.format(Date(log.timestamp))
 
     Card(
@@ -150,7 +150,7 @@ private fun LogItem(log: CallLog) {
                 Badge(
                     containerColor = BlockRed
                 ) {
-                    Text("New")
+                    Text("جديد")
                 }
             }
         }
