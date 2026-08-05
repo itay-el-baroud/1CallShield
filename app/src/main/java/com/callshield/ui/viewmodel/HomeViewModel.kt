@@ -13,6 +13,9 @@ class HomeViewModel : ViewModel() {
     private val _blockedNumbers = MutableStateFlow<List<BlockedNumber>>(emptyList())
     val blockedNumbers: StateFlow<List<BlockedNumber>> = _blockedNumbers
 
+    private val _pinnedNumbers = MutableStateFlow<List<BlockedNumber>>(emptyList())
+    val pinnedNumbers: StateFlow<List<BlockedNumber>> = _pinnedNumbers
+
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
@@ -20,7 +23,13 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch {
             val db = AppDatabase.getDatabase(context)
             val numbers = db.blockedNumberDao().getAll()
-            _blockedNumbers.value = numbers
+            
+            // Sort by call attempts (most annoying first)
+            val sorted = numbers.sortedByDescending { it.callAttempts }
+            
+            // Pin top 3 most annoying numbers
+            _pinnedNumbers.value = sorted.take(3).filter { it.callAttempts > 5 }
+            _blockedNumbers.value = sorted
         }
     }
 
