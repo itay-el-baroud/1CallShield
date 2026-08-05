@@ -55,7 +55,7 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun logBlockedSms(context: Context, db: AppDatabase, phoneNumber: String, displayName: String) {
+    private suspend fun logBlockedSms(context: Context, db: AppDatabase, phoneNumber: String, displayName: String) {
         val log = CallLog(
             phoneNumber = phoneNumber,
             displayName = displayName,
