@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,9 +25,13 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
     val context = LocalContext.current
     val logs by viewModel.logs.collectAsState()
     val stats by viewModel.stats.collectAsState()
+    var selectedLog by remember { mutableStateOf<CallLog?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        isLoading = true
         viewModel.loadLogs(context)
+        isLoading = false
     }
 
     Scaffold(
@@ -71,8 +74,21 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
                 }
             }
 
+            // Loading Indicator
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
             // Logs List
-            if (logs.isEmpty()) {
+            if (logs.isEmpty() && !isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -99,22 +115,99 @@ fun LogsScreen(viewModel: LogsViewModel = viewModel()) {
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     items(logs) { log ->
-                        LogItem(log = log)
+                        LogItem(
+                            log = log,
+                            onClick = { selectedLog = log }
+                        )
                     }
                 }
             }
         }
     }
+
+    // Message Detail Dialog
+    selectedLog?.let { log ->
+        AlertDialog(
+            onDismissRequest = { selectedLog = null },
+            title = { 
+                Column {
+                    Text(log.phoneNumber)
+                    if (log.displayName.isNotEmpty()) {
+                        Text(
+                            log.displayName,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            },
+            text = {
+                Column {
+                    val dateFormat = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale("ar"))
+                    Text(
+                        "الوقت: ${dateFormat.format(Date(log.timestamp))}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    if (log.messageContent.isNotEmpty()) {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        ) {
+                            Column(modifier = Modifier.padding(12.dp)) {
+                                Text(
+                                    "محتوى الرسالة:",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    log.messageContent,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            // Block this number
+                            selectedLog = null
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = BlockRed)
+                    ) {
+                        Icon(Icons.Default.Block, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("حظر هذا الرقم")
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { selectedLog = null }) {
+                    Text("إغلاق")
+                }
+            }
+        )
+    }
 }
 
 @Composable
-private fun LogItem(log: CallLog) {
-    val dateFormat = SimpleDateFormat("dd MMM, HH:mm", Locale("ar"))
+private fun LogItem(
+    log: CallLog,
+    onClick: () -> Unit
+) {
+    val dateFormat = SimpleDateFormat("dd MMM, HH:mm:ss", Locale("ar"))
     val dateStr = dateFormat.format(Date(log.timestamp))
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        onClick = onClick
     ) {
         Row(
             modifier = Modifier
@@ -145,6 +238,14 @@ private fun LogItem(log: CallLog) {
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+                if (log.messageContent.isNotEmpty()) {
+                    Text(
+                        text = log.messageContent.take(50) + if (log.messageContent.length > 50) "..." else "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1
+                    )
+                }
             }
             if (!log.isRead) {
                 Badge(
@@ -153,6 +254,11 @@ private fun LogItem(log: CallLog) {
                     Text("جديد")
                 }
             }
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }
