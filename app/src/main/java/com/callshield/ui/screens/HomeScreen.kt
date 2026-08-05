@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.callshield.data.BlockedNumber
@@ -27,9 +26,12 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     val pinnedNumbers by viewModel.pinnedNumbers.collectAsState()
     var showDeleteDialog by remember { mutableStateOf<BlockedNumber?>(null) }
     var showAnalysisDialog by remember { mutableStateOf<BlockedNumber?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        isLoading = true
         viewModel.loadBlockedNumbers(context)
+        isLoading = false
     }
 
     Scaffold(
@@ -85,10 +87,29 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         value = blockedNumbers.sumOf { it.callAttempts }.toString(),
                         label = "محاولات"
                     )
+                    StatItem(
+                        icon = Icons.Default.SimCard,
+                        value = blockedNumbers.map { it.simSlot }.distinct().size.toString(),
+                        label = "خطوط"
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Loading Indicator
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             // Pinned Numbers Section
             if (pinnedNumbers.isNotEmpty()) {
@@ -117,7 +138,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
             }
 
             // Blocked Numbers List
-            if (blockedNumbers.isEmpty()) {
+            if (blockedNumbers.isEmpty() && !isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -188,6 +209,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
             text = {
                 Column {
                     Text("الرقم: ${number.phoneNumber}")
+                    Text("الخط: ${if (number.simSlot == -1) "كل الخطوط" else "خط ${number.simSlot + 1}"}")
                     Text("عدد المحاولات: ${number.callAttempts}")
                     Text("آخر محاولة: ${if (number.lastAttemptTime != null) "منذ قليل" else "لا يوجد"}")
                     if (number.callAttempts > 10) {
@@ -263,13 +285,12 @@ private fun BlockedNumberCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                if (number.label.isNotEmpty()) {
-                    Text(
-                        text = number.label,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                // SIM Info
+                Text(
+                    text = if (number.simSlot == -1) "كل الخطوط" else "خط ${number.simSlot + 1} - ${number.simOperator}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
                 if (number.callAttempts > 0) {
                     Text(
                         text = "${number.callAttempts} محاولات",
