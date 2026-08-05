@@ -17,7 +17,8 @@ data class AppSettings(
     val autoBlockAfterAttempts: Boolean,
     val attemptThreshold: Int,
     val blockUnknownOnly: Boolean,
-    val darkMode: Boolean
+    val darkMode: Boolean,
+    val followSystem: Boolean
 )
 
 class SettingsViewModel : ViewModel() {
@@ -30,6 +31,7 @@ class SettingsViewModel : ViewModel() {
         val ATTEMPT_THRESHOLD = intPreferencesKey("attempt_threshold")
         val BLOCK_UNKNOWN_ONLY = booleanPreferencesKey("block_unknown_only")
         val DARK_MODE = booleanPreferencesKey("dark_mode")
+        val FOLLOW_SYSTEM = booleanPreferencesKey("follow_system")
     }
 
     fun loadSettings(context: Context) {
@@ -40,7 +42,8 @@ class SettingsViewModel : ViewModel() {
                 autoBlockAfterAttempts = prefs[PreferencesKeys.AUTO_BLOCK_ATTEMPTS] ?: false,
                 attemptThreshold = prefs[PreferencesKeys.ATTEMPT_THRESHOLD] ?: 5,
                 blockUnknownOnly = prefs[PreferencesKeys.BLOCK_UNKNOWN_ONLY] ?: false,
-                darkMode = prefs[PreferencesKeys.DARK_MODE] ?: false
+                darkMode = prefs[PreferencesKeys.DARK_MODE] ?: false,
+                followSystem = prefs[PreferencesKeys.FOLLOW_SYSTEM] ?: true
             )
         }
     }
@@ -75,7 +78,20 @@ class SettingsViewModel : ViewModel() {
 
     fun updateDarkMode(context: Context, value: Boolean) {
         viewModelScope.launch {
-            context.dataStore.edit { it[PreferencesKeys.DARK_MODE] = value }
+            context.dataStore.edit { 
+                it[PreferencesKeys.DARK_MODE] = value 
+                if (value) it[PreferencesKeys.FOLLOW_SYSTEM] = false
+            }
+            loadSettings(context)
+        }
+    }
+
+    fun updateFollowSystem(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { 
+                it[PreferencesKeys.FOLLOW_SYSTEM] = value 
+                if (value) it[PreferencesKeys.DARK_MODE] = false
+            }
             loadSettings(context)
         }
     }
