@@ -31,7 +31,8 @@ data class AppSettings(
     val keywordBypass: Boolean,
     val fakeDisconnect: Boolean,
     val smsKeywordFilter: Boolean,
-    val biometricLock: Boolean
+    val biometricLock: Boolean,
+    val blockAllSims: Boolean
 )
 
 class SettingsViewModel : ViewModel() {
@@ -50,6 +51,7 @@ class SettingsViewModel : ViewModel() {
         val FAKE_DISCONNECT = booleanPreferencesKey("fake_disconnect")
         val SMS_KEYWORD_FILTER = booleanPreferencesKey("sms_keyword_filter")
         val BIOMETRIC_LOCK = booleanPreferencesKey("biometric_lock")
+        val BLOCK_ALL_SIMS = booleanPreferencesKey("block_all_sims")
     }
 
     fun loadSettings(context: Context) {
@@ -66,7 +68,8 @@ class SettingsViewModel : ViewModel() {
                 keywordBypass = prefs[PreferencesKeys.KEYWORD_BYPASS] ?: false,
                 fakeDisconnect = prefs[PreferencesKeys.FAKE_DISCONNECT] ?: false,
                 smsKeywordFilter = prefs[PreferencesKeys.SMS_KEYWORD_FILTER] ?: false,
-                biometricLock = prefs[PreferencesKeys.BIOMETRIC_LOCK] ?: false
+                biometricLock = prefs[PreferencesKeys.BIOMETRIC_LOCK] ?: false,
+                blockAllSims = prefs[PreferencesKeys.BLOCK_ALL_SIMS] ?: true
             )
         }
     }
@@ -154,6 +157,13 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun updateBlockAllSims(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.BLOCK_ALL_SIMS] = value }
+            loadSettings(context)
+        }
+    }
+
     fun exportBlockedList(context: Context) {
         viewModelScope.launch {
             val db = AppDatabase.getDatabase(context)
@@ -168,6 +178,8 @@ class SettingsViewModel : ViewModel() {
                     put("category", number.category)
                     put("blockCalls", number.blockCalls)
                     put("blockSms", number.blockSms)
+                    put("simSlot", number.simSlot)
+                    put("simOperator", number.simOperator)
                     put("createdAt", number.createdAt)
                 }
                 jsonArray.put(jsonObject)
@@ -186,7 +198,6 @@ class SettingsViewModel : ViewModel() {
     fun importBlockedList(context: Context) {
         viewModelScope.launch {
             // Implementation for importing would go here
-            // This is a placeholder for future implementation
         }
     }
 
