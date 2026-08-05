@@ -3,8 +3,7 @@ package com.callshield.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Save
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,6 +28,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
     var isTemporary by remember { mutableStateOf(false) }
     var tempDuration by remember { mutableStateOf("1 hour") }
     var showSuccess by remember { mutableStateOf(false) }
+    var showCategoryMenu by remember { mutableStateOf(false) }
 
     val categories = listOf(
         "spam" to "مزعج",
@@ -50,16 +50,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle back */ }) {
-                        Icon(
-                            Icons.Default.ArrowBack,
-                            contentDescription = "رجوع",
-                            tint = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
+                )
             )
         }
     ) { padding ->
@@ -77,7 +68,8 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 label = { Text("رقم الهاتف *") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) }
             )
 
             // Display Name (Optional)
@@ -86,7 +78,8 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 onValueChange = { displayName = it },
                 label = { Text("الاسم (اختياري)") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) }
             )
 
             // Label (Optional)
@@ -95,21 +88,39 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 onValueChange = { label = it },
                 label = { Text("اللقب (اختياري)") },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+                singleLine = true,
+                leadingIcon = { Icon(Icons.Default.Label, contentDescription = null) }
             )
 
-            // Category
-            Text("التصنيف", style = MaterialTheme.typography.titleSmall)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            // Category Dropdown
+            ExposedDropdownMenuBox(
+                expanded = showCategoryMenu,
+                onExpandedChange = { showCategoryMenu = it },
+                modifier = Modifier.fillMaxWidth()
             ) {
-                categories.forEach { (key, name) ->
-                    FilterChip(
-                        selected = selectedCategory == key,
-                        onClick = { selectedCategory = key },
-                        label = { Text(name) }
-                    )
+                OutlinedTextField(
+                    value = categories.find { it.first == selectedCategory }?.second ?: "مزعج",
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("التصنيف") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showCategoryMenu) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = showCategoryMenu,
+                    onDismissRequest = { showCategoryMenu = false }
+                ) {
+                    categories.forEach { (key, name) ->
+                        DropdownMenuItem(
+                            text = { Text(name) },
+                            onClick = {
+                                selectedCategory = key
+                                showCategoryMenu = false
+                            }
+                        )
+                    }
                 }
             }
 
@@ -168,7 +179,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Save Button
+            // Block Button with Icon
             Button(
                 onClick = {
                     if (phoneNumber.isNotBlank()) {
@@ -192,7 +203,7 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = BlockRed)
             ) {
-                Icon(Icons.Default.Save, contentDescription = null)
+                Icon(Icons.Default.Block, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("حظر الرقم")
             }
