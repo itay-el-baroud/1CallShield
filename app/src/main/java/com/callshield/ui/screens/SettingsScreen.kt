@@ -18,6 +18,7 @@ import com.callshield.ui.viewmodel.SettingsViewModel
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
     val context = LocalContext.current
     val settings by viewModel.settings.collectAsState()
+    var isLoading by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadSettings(context)
@@ -39,17 +40,41 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            // Smart Block Section
+            // Loading Indicator
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(48.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+
+            // Smart Block Section - الحظر الذكي لكل الخطوط
             SettingsSection(title = "الحظر الذكي") {
                 SettingsSwitchItem(
                     icon = Icons.Default.Security,
+                    title = "حظر المكالمات من جميع الخطوط",
+                    subtitle = "حظر تلقائي من كل الخطوط - لا يمكن التواصل أبداً",
+                    checked = settings?.blockAllSims ?: false,
+                    onCheckedChange = { 
+                        isLoading = true
+                        viewModel.updateBlockAllSims(context, it)
+                        isLoading = false
+                    }
+                )
+                SettingsSwitchItem(
+                    icon = Icons.Default.Phone,
                     title = "حظر الأرقام المزعجة تلقائياً",
                     subtitle = "حظر الأرقام المعروفة كمزعجة تلقائياً",
                     checked = settings?.autoBlockSpam ?: false,
                     onCheckedChange = { viewModel.updateAutoBlockSpam(context, it) }
                 )
                 SettingsSwitchItem(
-                    icon = Icons.Default.Phone,
+                    icon = Icons.Default.PhoneDisabled,
                     title = "الحظر التلقائي بعد محاولات متكررة",
                     subtitle = "حظر الأرقام التي تتصل أكثر من الحد المسموح",
                     checked = settings?.autoBlockAfterAttempts ?: false,
@@ -83,7 +108,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 SettingsSwitchItem(
                     icon = Icons.Default.Message,
                     title = "كسر الحظر بكلمة السر",
-                    subtitle = "فك الحظر لو بعت SMS فيها كلمة 'طوارئ'",
+                    subtitle = "فك الحظر لو بعت SMS فيها كلمة طوارئ",
                     checked = settings?.keywordBypass ?: false,
                     onCheckedChange = { viewModel.updateKeywordBypass(context, it) }
                 )
@@ -94,7 +119,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 SettingsSwitchItem(
                     icon = Icons.Default.PhoneDisabled,
                     title = "تفعيل نغمة الخط المقفول",
-                    subtitle = "تشغيل نغمة 'الرقم غير متاح' للمحظورين",
+                    subtitle = "تشغيل نغمة الرقم غير متاح للمحظورين",
                     checked = settings?.fakeDisconnect ?: false,
                     onCheckedChange = { viewModel.updateFakeDisconnect(context, it) }
                 )
@@ -165,14 +190,25 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
             // Backup Section
             SettingsSection(title = "النسخ الاحتياطي") {
                 Button(
-                    onClick = { viewModel.exportBlockedList(context) },
+                    onClick = { 
+                        isLoading = true
+                        viewModel.exportBlockedList(context)
+                        isLoading = false
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 4.dp)
                 ) {
-                    Icon(Icons.Default.Download, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("تصدير القائمة")
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(20.dp),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Icon(Icons.Default.Download, contentDescription = null)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("تصدير القائمة")
+                    }
                 }
                 Button(
                     onClick = { viewModel.importBlockedList(context) },
