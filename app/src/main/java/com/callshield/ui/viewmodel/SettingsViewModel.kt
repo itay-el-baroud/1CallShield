@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.callshield.data.AppDatabase
+import com.callshield.utils.AccessibilityUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
@@ -38,6 +39,9 @@ data class AppSettings(
 class SettingsViewModel : ViewModel() {
     private val _settings = MutableStateFlow<AppSettings?>(null)
     val settings: StateFlow<AppSettings?> = _settings
+
+    private val _isAccessibilityEnabled = MutableStateFlow(false)
+    val isAccessibilityEnabled: StateFlow<Boolean> = _isAccessibilityEnabled
 
     private object PreferencesKeys {
         val AUTO_BLOCK_SPAM = booleanPreferencesKey("auto_block_spam")
@@ -71,6 +75,7 @@ class SettingsViewModel : ViewModel() {
                 biometricLock = prefs[PreferencesKeys.BIOMETRIC_LOCK] ?: false,
                 blockAllSims = prefs[PreferencesKeys.BLOCK_ALL_SIMS] ?: true
             )
+            _isAccessibilityEnabled.value = AccessibilityUtils.isServiceEnabled(context)
         }
     }
 
@@ -164,6 +169,17 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun enableAccessibilityService(context: Context) {
+        AccessibilityUtils.requestEnableService(context)
+        viewModelScope.launch {
+            _isAccessibilityEnabled.value = AccessibilityUtils.isServiceEnabled(context)
+        }
+    }
+
+    fun openAccessibilitySettings(context: Context) {
+        AccessibilityUtils.openAccessibilitySettings(context)
+    }
+
     fun exportBlockedList(context: Context) {
         viewModelScope.launch {
             val db = AppDatabase.getDatabase(context)
@@ -199,14 +215,6 @@ class SettingsViewModel : ViewModel() {
         viewModelScope.launch {
             // Implementation for importing would go here
         }
-    }
-
-    fun enableAccessibilityService(context: Context) {
-        AccessibilityUtils.openAccessibilitySettings(context)
-    }
-    
-    fun openAccessibilitySettings(context: Context) {
-        AccessibilityUtils.openAccessibilitySettings(context)
     }
 
     fun clearAllData(context: Context) {
