@@ -17,7 +17,10 @@ class AddBlockViewModel : ViewModel() {
         blockCalls: Boolean,
         blockSms: Boolean,
         isTemporary: Boolean,
-        tempDuration: String?
+        tempDuration: String?,
+        simSlot: Int = -1,
+        simOperator: String = "",
+        networkType: String = ""
     ) {
         viewModelScope.launch {
             val db = AppDatabase.getDatabase(context)
@@ -40,7 +43,10 @@ class AddBlockViewModel : ViewModel() {
                 blockCalls = blockCalls,
                 blockSms = blockSms,
                 isTemporary = isTemporary,
-                unblockTime = unblockTime
+                unblockTime = unblockTime,
+                simSlot = simSlot,
+                simOperator = simOperator,
+                networkType = networkType
             )
 
             db.blockedNumberDao().insert(blockedNumber)
