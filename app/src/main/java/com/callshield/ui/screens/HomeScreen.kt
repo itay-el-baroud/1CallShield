@@ -55,7 +55,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                placeholder = { Text("Search blocked numbers...") },
+                placeholder = { Text("ابحث في الأرقام المحظورة...") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 singleLine = true
             )
@@ -78,12 +78,12 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     StatItem(
                         icon = Icons.Default.Block,
                         value = blockedNumbers.size.toString(),
-                        label = "Blocked"
+                        label = "محظور"
                     )
                     StatItem(
                         icon = Icons.Default.Phone,
                         value = blockedNumbers.sumOf { it.callAttempts }.toString(),
-                        label = "Attempts"
+                        label = "محاولات"
                     )
                 }
             }
@@ -105,7 +105,7 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "No blocked numbers yet",
+                            "لا توجد أرقام محظورة بعد",
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -132,8 +132,8 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
     showDeleteDialog?.let { number ->
         AlertDialog(
             onDismissRequest = { showDeleteDialog = null },
-            title = { Text("Remove Block") },
-            text = { Text("Are you sure you want to unblock ${number.phoneNumber}?") },
+            title = { Text("إلغاء الحظر") },
+            text = { Text("هل أنت متأكد من إلغاء حظر ${number.phoneNumber}؟") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -141,12 +141,12 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                         showDeleteDialog = null
                     }
                 ) {
-                    Text("Unblock", color = BlockRed)
+                    Text("إلغاء الحظر", color = BlockRed)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = null }) {
-                    Text("Cancel")
+                    Text("إلغاء")
                 }
             }
         )
@@ -210,7 +210,7 @@ private fun BlockedNumberCard(
                 }
                 if (number.callAttempts > 0) {
                     Text(
-                        text = "${number.callAttempts} attempts",
+                        text = "${number.callAttempts} محاولات",
                         style = MaterialTheme.typography.labelSmall,
                         color = BlockRed
                     )
@@ -219,7 +219,7 @@ private fun BlockedNumberCard(
             IconButton(onClick = onDelete) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Unblock",
+                    contentDescription = "إلغاء الحظر",
                     tint = BlockRed
                 )
             }
