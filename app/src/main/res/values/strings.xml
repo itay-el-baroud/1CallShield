@@ -1,4 +1,3 @@
-
 <resources>
     <string name="app_name">CallShield</string>
     
@@ -21,7 +20,7 @@
     <string name="speaker_button">مكبر الصوت</string>
     <string name="video_button">فيديو</string>
     <string name="add_call_button">إضافة مكالمة</string>
-    <string name="block_button">حظر هذا الرقم</string>
+    <string name="block_number_button">حظر هذا الرقم</string>
     <string name="end_call_button">إنهاء المكالمة</string>
     <string name="call_on_hold">معلقة</string>
     <string name="recording_in_progress">جاري التسجيل</string>
@@ -52,7 +51,7 @@
     <string name="one_hour">ساعة واحدة</string>
     <string name="one_day">يوم واحد</string>
     <string name="one_week">أسبوع واحد</string>
-    <string name="block_button">حظر الرقم</string>
+    <string name="block_action_button">حظر الرقم</string>
     <string name="block_success">تم حظر الرقم بنجاح!</string>
     <string name="ok">موافق</string>
     
@@ -162,4 +161,4 @@
     <string name="default_dialer_prompt">اجعل CallShield تطبيق الاتصال الافتراضي للحظر الحقيقي</string>
     <string name="set_as_default">تعيين كافتراضي</string>
 </resources>
-        
+    
