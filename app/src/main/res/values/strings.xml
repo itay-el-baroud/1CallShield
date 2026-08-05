@@ -1,3 +1,94 @@
 <resources>
     <string name="app_name">CallShield</string>
+    
+    <!-- Home Screen -->
+    <string name="home_title">CallShield</string>
+    <string name="search_hint">ابحث في الأرقام المحظورة...</string>
+    <string name="blocked_count">محظور</string>
+    <string name="attempts_count">محاولات</string>
+    <string name="no_blocked_numbers">لا توجد أرقام محظورة بعد</string>
+    
+    <!-- Add Block Screen -->
+    <string name="add_block_title">حظر رقم جديد</string>
+    <string name="phone_number_hint">رقم الهاتف *</string>
+    <string name="display_name_hint">الاسم (اختياري)</string>
+    <string name="label_hint">اللقب (اختياري)</string>
+    <string name="category_label">التصنيف</string>
+    <string name="block_options_label">خيارات الحظر</string>
+    <string name="block_calls">المكالمات</string>
+    <string name="block_sms">الرسائل</string>
+    <string name="temporary_block">حظر مؤقت</string>
+    <string name="one_hour">ساعة واحدة</string>
+    <string name="one_day">يوم واحد</string>
+    <string name="one_week">أسبوع واحد</string>
+    <string name="block_button">حظر الرقم</string>
+    <string name="block_success">تم حظر الرقم بنجاح!</string>
+    <string name="ok">موافق</string>
+    
+    <!-- Categories -->
+    <string name="category_spam">مزعج</string>
+    <string name="category_harassment">تحرش</string>
+    <string name="category_work">عمل</string>
+    <string name="category_personal">شخصي</string>
+    <string name="category_unknown">غير معروف</string>
+    
+    <!-- Logs Screen -->
+    <string name="logs_title">سجل المكالمات</string>
+    <string name="analysis_title">تحليل</string>
+    <string name="total_blocked_calls">إجمالي المكالمات المحظورة</string>
+    <string name="total_blocked_sms">إجمالي الرسائل المحظورة</string>
+    <string name="most_active_number">أكثر رقم نشاطاً</string>
+    <string name="last_24_hours">آخر 24 ساعة</string>
+    <string name="no_logs_yet">لا يوجد سجلات بعد</string>
+    <string name="new_label">جديد</string>
+    
+    <!-- Settings Screen -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="smart_block_title">الحظر الذكي</string>
+    <string name="auto_block_spam">حظر الأرقام المزعجة تلقائياً</string>
+    <string name="auto_block_spam_desc">حظر الأرقام المعروفة كمزعجة تلقائياً</string>
+    <string name="auto_block_attempts">الحظر التلقائي بعد محاولات متكررة</string>
+    <string name="auto_block_attempts_desc">حظر الأرقام التي تتصل أكثر من الحد المسموح</string>
+    <string name="attempt_threshold_hint">عدد المحاولات المسموحة</string>
+    <string name="dnd_title">وضع عدم الإزعاج</string>
+    <string name="block_unknown_only">حظر الأرقام غير المعروفة فقط</string>
+    <string name="block_unknown_only_desc">السماح لجهات الاتصال فقط</string>
+    <string name="appearance_title">المظهر</string>
+    <string name="dark_mode">الوضع الليلي</string>
+    <string name="dark_mode_desc">تفعيل الوضع الليلي</string>
+    <string name="follow_system">اتباع نظام الجهاز</string>
+    <string name="follow_system_desc">تغيير الوضع حسب إعدادات الجهاز</string>
+    <string name="danger_zone_title">منطقة الخطر</string>
+    <string name="clear_all_data">مسح جميع البيانات</string>
+    
+    <!-- Delete Dialog -->
+    <string name="remove_block_title">إلغاء الحظر</string>
+    <string name="remove_block_message">هل أنت متأكد من إلغاء حظر %s؟</string>
+    <string name="unblock">إلغاء الحظر</string>
+    <string name="cancel">إلغاء</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_add">إضافة</string>
+    <string name="nav_logs">السجلات</string>
+    <string name="nav_settings">الإعدادات</string>
+    
+    <!-- Onboarding -->
+    <string name="welcome_title">مرحباً بك في CallShield</string>
+    <string name="welcome_desc">حمايتك من المكالمات والرسائل المزعجة</string>
+    <string name="permissions_title">الأذونات المطلوبة</string>
+    <string name="permissions_desc">يحتاج التطبيق إلى بعض الأذونات للعمل بشكل صحيح</string>
+    <string name="grant_permissions">منح الأذونات</string>
+    <string name="skip_tour">تخطي الجولة</string>
+    <string name="next">التالي</string>
+    <string name="finish">إنهاء</string>
+    <string name="tour_home_title">الرئيسية</string>
+    <string name="tour_home_desc">هنا يمكنك رؤية جميع الأرقام المحظورة وإحصائياتها</string>
+    <string name="tour_add_title">إضافة حظر</string>
+    <string name="tour_add_desc">أضف رقماً جديداً للحظر مع خيارات متعددة</string>
+    <string name="tour_logs_title">السجلات</string>
+    <string name="tour_logs_desc">تابع جميع المحاولات المحظورة وتحليلاتها</string>
+    <string name="tour_settings_title">الإعدادات</string>
+    <string name="tour_settings_desc">خصص التطبيق حسب احتياجاتك</string>
 </resources>
+        
