@@ -3,7 +3,8 @@ package com.callshield.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Block
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,28 +21,7 @@ import com.callshield.ui.viewmodel.AddBlockViewModel
 fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
     val context = LocalContext.current
     var phoneNumber by remember { mutableStateOf("") }
-    var displayName by remember { mutableStateOf("") }
-    var label by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("spam") }
-    var blockCalls by remember { mutableStateOf(true) }
-    var blockSms by remember { mutableStateOf(true) }
-    var isTemporary by remember { mutableStateOf(false) }
-    var tempDuration by remember { mutableStateOf("1 hour") }
     var showSuccess by remember { mutableStateOf(false) }
-    var showCategoryMenu by remember { mutableStateOf(false) }
-
-    val categories = listOf(
-        "spam" to "مزعج",
-        "harassment" to "تحرش",
-        "work" to "عمل",
-        "personal" to "شخصي",
-        "unknown" to "غير معروف"
-    )
-    val tempOptions = listOf(
-        "1 hour" to "ساعة واحدة",
-        "1 day" to "يوم واحد",
-        "1 week" to "أسبوع واحد"
-    )
 
     Scaffold(
         topBar = {
@@ -58,168 +38,97 @@ fun AddBlockScreen(viewModel: AddBlockViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            // Phone Number
+            // Phone Icon
+            Icon(
+                imageVector = Icons.Default.Phone,
+                contentDescription = null,
+                modifier = Modifier.size(80.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Phone Number Input
             OutlinedTextField(
                 value = phoneNumber,
                 onValueChange = { phoneNumber = it },
-                label = { Text("رقم الهاتف *") },
+                label = { Text("رقم الهاتف") },
+                placeholder = { Text("مثال: 01234567890") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) }
+                leadingIcon = {
+                    Icon(Icons.Default.Phone, contentDescription = null)
+                }
             )
 
-            // Display Name (Optional)
-            OutlinedTextField(
-                value = displayName,
-                onValueChange = { displayName = it },
-                label = { Text("الاسم (اختياري)") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) }
-            )
+            Spacer(modifier = Modifier.height(24.dp))
 
-            // Label (Optional)
-            OutlinedTextField(
-                value = label,
-                onValueChange = { label = it },
-                label = { Text("اللقب (اختياري)") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                leadingIcon = { Icon(Icons.Default.Label, contentDescription = null) }
-            )
-
-            // Category Dropdown
-            ExposedDropdownMenuBox(
-                expanded = showCategoryMenu,
-                onExpandedChange = { showCategoryMenu = it },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = categories.find { it.first == selectedCategory }?.second ?: "مزعج",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("التصنيف") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = showCategoryMenu) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor()
-                )
-                ExposedDropdownMenu(
-                    expanded = showCategoryMenu,
-                    onDismissRequest = { showCategoryMenu = false }
-                ) {
-                    categories.forEach { (key, name) ->
-                        DropdownMenuItem(
-                            text = { Text(name) },
-                            onClick = {
-                                selectedCategory = key
-                                showCategoryMenu = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            // Block Options
-            Text("خيارات الحظر", style = MaterialTheme.typography.titleSmall)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = blockCalls,
-                        onCheckedChange = { blockCalls = it }
-                    )
-                    Text("المكالمات")
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = blockSms,
-                        onCheckedChange = { blockSms = it }
-                    )
-                    Text("الرسائل")
-                }
-            }
-
-            // Temporary Block
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = isTemporary,
-                    onCheckedChange = { isTemporary = it }
-                )
-                Text("حظر مؤقت")
-            }
-
-            if (isTemporary) {
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    tempOptions.forEachIndexed { index, (key, name) ->
-                        SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = tempOptions.size
-                            ),
-                            onClick = { tempDuration = key },
-                            selected = tempDuration == key
-                        ) {
-                            Text(name)
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Block Button with Icon
+            // Block Button
             Button(
                 onClick = {
                     if (phoneNumber.isNotBlank()) {
                         viewModel.blockNumber(
                             context = context,
                             phoneNumber = phoneNumber,
-                            displayName = displayName,
-                            label = label,
-                            category = selectedCategory,
-                            blockCalls = blockCalls,
-                            blockSms = blockSms,
-                            isTemporary = isTemporary,
-                            tempDuration = if (isTemporary) tempDuration else null
+                            displayName = "",
+                            label = "",
+                            category = "spam",
+                            blockCalls = true,
+                            blockSms = true,
+                            isTemporary = false,
+                            tempDuration = null
                         )
                         showSuccess = true
                         phoneNumber = ""
-                        displayName = ""
-                        label = ""
                     }
                 },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = BlockRed)
             ) {
                 Icon(Icons.Default.Block, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("حظر الرقم")
+                Text(
+                    "حظر الرقم",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
-        }
 
-        // Success Snackbar
-        if (showSuccess) {
-            Snackbar(
-                modifier = Modifier.padding(16.dp),
-                action = {
-                    TextButton(onClick = { showSuccess = false }) {
-                        Text("موافق")
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Success Message
+            if (showSuccess) {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Block,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "تم حظر الرقم بنجاح!",
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
                 }
-            ) {
-                Text("تم حظر الرقم بنجاح!")
             }
         }
     }
