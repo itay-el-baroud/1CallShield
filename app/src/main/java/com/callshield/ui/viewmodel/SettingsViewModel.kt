@@ -1,14 +1,22 @@
 package com.callshield.ui.viewmodel
 
 import android.content.Context
+import android.os.Environment
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.callshield.data.AppDatabase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
+import java.io.File
+import java.io.FileWriter
+import java.text.SimpleDateFormat
+import java.util.*
 
 private val Context.dataStore by preferencesDataStore(name = "settings")
 
@@ -18,7 +26,12 @@ data class AppSettings(
     val attemptThreshold: Int,
     val blockUnknownOnly: Boolean,
     val darkMode: Boolean,
-    val followSystem: Boolean
+    val followSystem: Boolean,
+    val emergencyBypass: Boolean,
+    val keywordBypass: Boolean,
+    val fakeDisconnect: Boolean,
+    val smsKeywordFilter: Boolean,
+    val biometricLock: Boolean
 )
 
 class SettingsViewModel : ViewModel() {
@@ -32,6 +45,11 @@ class SettingsViewModel : ViewModel() {
         val BLOCK_UNKNOWN_ONLY = booleanPreferencesKey("block_unknown_only")
         val DARK_MODE = booleanPreferencesKey("dark_mode")
         val FOLLOW_SYSTEM = booleanPreferencesKey("follow_system")
+        val EMERGENCY_BYPASS = booleanPreferencesKey("emergency_bypass")
+        val KEYWORD_BYPASS = booleanPreferencesKey("keyword_bypass")
+        val FAKE_DISCONNECT = booleanPreferencesKey("fake_disconnect")
+        val SMS_KEYWORD_FILTER = booleanPreferencesKey("sms_keyword_filter")
+        val BIOMETRIC_LOCK = booleanPreferencesKey("biometric_lock")
     }
 
     fun loadSettings(context: Context) {
@@ -43,7 +61,12 @@ class SettingsViewModel : ViewModel() {
                 attemptThreshold = prefs[PreferencesKeys.ATTEMPT_THRESHOLD] ?: 5,
                 blockUnknownOnly = prefs[PreferencesKeys.BLOCK_UNKNOWN_ONLY] ?: false,
                 darkMode = prefs[PreferencesKeys.DARK_MODE] ?: false,
-                followSystem = prefs[PreferencesKeys.FOLLOW_SYSTEM] ?: true
+                followSystem = prefs[PreferencesKeys.FOLLOW_SYSTEM] ?: true,
+                emergencyBypass = prefs[PreferencesKeys.EMERGENCY_BYPASS] ?: false,
+                keywordBypass = prefs[PreferencesKeys.KEYWORD_BYPASS] ?: false,
+                fakeDisconnect = prefs[PreferencesKeys.FAKE_DISCONNECT] ?: false,
+                smsKeywordFilter = prefs[PreferencesKeys.SMS_KEYWORD_FILTER] ?: false,
+                biometricLock = prefs[PreferencesKeys.BIOMETRIC_LOCK] ?: false
             )
         }
     }
@@ -96,9 +119,80 @@ class SettingsViewModel : ViewModel() {
         }
     }
 
+    fun updateEmergencyBypass(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.EMERGENCY_BYPASS] = value }
+            loadSettings(context)
+        }
+    }
+
+    fun updateKeywordBypass(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.KEYWORD_BYPASS] = value }
+            loadSettings(context)
+        }
+    }
+
+    fun updateFakeDisconnect(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.FAKE_DISCONNECT] = value }
+            loadSettings(context)
+        }
+    }
+
+    fun updateSmsKeywordFilter(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.SMS_KEYWORD_FILTER] = value }
+            loadSettings(context)
+        }
+    }
+
+    fun updateBiometricLock(context: Context, value: Boolean) {
+        viewModelScope.launch {
+            context.dataStore.edit { it[PreferencesKeys.BIOMETRIC_LOCK] = value }
+            loadSettings(context)
+        }
+    }
+
+    fun exportBlockedList(context: Context) {
+        viewModelScope.launch {
+            val db = AppDatabase.getDatabase(context)
+            val blockedNumbers = db.blockedNumberDao().getAll()
+            
+            val jsonArray = JSONArray()
+            blockedNumbers.forEach { number ->
+                val jsonObject = JSONObject().apply {
+                    put("phoneNumber", number.phoneNumber)
+                    put("displayName", number.displayName)
+                    put("label", number.label)
+                    put("category", number.category)
+                    put("blockCalls", number.blockCalls)
+                    put("blockSms", number.blockSms)
+                    put("createdAt", number.createdAt)
+                }
+                jsonArray.put(jsonObject)
+            }
+            
+            val fileName = "callshield_backup_${SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())}.json"
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val file = File(downloadsDir, fileName)
+            
+            FileWriter(file).use { writer ->
+                writer.write(jsonArray.toString(2))
+            }
+        }
+    }
+
+    fun importBlockedList(context: Context) {
+        viewModelScope.launch {
+            // Implementation for importing would go here
+            // This is a placeholder for future implementation
+        }
+    }
+
     fun clearAllData(context: Context) {
         viewModelScope.launch {
-            val db = com.callshield.data.AppDatabase.getDatabase(context)
+            val db = AppDatabase.getDatabase(context)
             db.blockedNumberDao().getAll().forEach {
                 db.blockedNumberDao().delete(it)
             }
