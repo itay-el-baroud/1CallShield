@@ -2,10 +2,7 @@ package com.callshield.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -87,19 +84,30 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
 
             // Appearance Section
             SettingsSection(title = "المظهر") {
+                var darkModeEnabled by remember { mutableStateOf(settings?.darkMode ?: false) }
+                var followSystemEnabled by remember { mutableStateOf(settings?.followSystem ?: true) }
+                
                 SettingsSwitchItem(
                     icon = Icons.Default.DarkMode,
                     title = "الوضع الليلي",
                     subtitle = "تفعيل الوضع الليلي",
-                    checked = settings?.darkMode ?: false,
-                    onCheckedChange = { viewModel.updateDarkMode(context, it) }
+                    checked = darkModeEnabled && !followSystemEnabled,
+                    onCheckedChange = { 
+                        darkModeEnabled = it
+                        if (it) followSystemEnabled = false
+                        viewModel.updateDarkMode(context, it)
+                    }
                 )
                 SettingsSwitchItem(
-                    icon = Icons.Default.DarkMode,
+                    icon = Icons.Default.PhoneAndroid,
                     title = "اتباع نظام الجهاز",
                     subtitle = "تغيير الوضع حسب إعدادات الجهاز",
-                    checked = settings?.followSystem ?: false,
-                    onCheckedChange = { viewModel.updateFollowSystem(context, it) }
+                    checked = followSystemEnabled,
+                    onCheckedChange = { 
+                        followSystemEnabled = it
+                        if (it) darkModeEnabled = false
+                        viewModel.updateFollowSystem(context, it)
+                    }
                 )
             }
 
