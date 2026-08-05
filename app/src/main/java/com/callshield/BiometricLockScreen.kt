@@ -33,7 +33,7 @@ fun BiometricLockScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "استخدم بصمة إصبعك للوصول إلى قائمة المحظورين",
+            "اضغط الزر للدخول",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -45,7 +45,7 @@ fun BiometricLockScreen(
         ) {
             Icon(Icons.Default.Fingerprint, contentDescription = null)
             Spacer(modifier = Modifier.width(8.dp))
-            Text("فتح بالبصمة")
+            Text("فتح التطبيق")
         }
     }
 }
