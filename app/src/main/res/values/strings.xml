@@ -7,6 +7,8 @@
     <string name="blocked_count">محظور</string>
     <string name="attempts_count">محاولات</string>
     <string name="no_blocked_numbers">لا توجد أرقام محظورة بعد</string>
+    <string name="most_annoying">الأرقام الأكثر إزعاجاً</string>
+    <string name="analysis">تحليل</string>
     
     <!-- Add Block Screen -->
     <string name="add_block_title">حظر رقم جديد</string>
@@ -31,6 +33,7 @@
     <string name="category_work">عمل</string>
     <string name="category_personal">شخصي</string>
     <string name="category_unknown">غير معروف</string>
+    <string name="category_ads">إعلانات</string>
     
     <!-- Logs Screen -->
     <string name="logs_title">سجل المكالمات</string>
@@ -50,6 +53,16 @@
     <string name="auto_block_attempts">الحظر التلقائي بعد محاولات متكررة</string>
     <string name="auto_block_attempts_desc">حظر الأرقام التي تتصل أكثر من الحد المسموح</string>
     <string name="attempt_threshold_hint">عدد المحاولات المسموحة</string>
+    <string name="emergency_bypass_title">كسر الحظر الطوارئ</string>
+    <string name="emergency_bypass">تفعيل كسر الحظر الطوارئ</string>
+    <string name="emergency_bypass_desc">فك الحظر لو اتصل نفس الرقم 3 مرات في دقيقتين</string>
+    <string name="keyword_bypass">كسر الحظر بكلمة السر</string>
+    <string name="keyword_bypass_desc">فك الحظر لو بعت SMS فيها كلمة طوارئ</string>
+    <string name="fake_disconnect">تفعيل نغمة الخط المقفول</string>
+    <string name="fake_disconnect_desc">تشغيل نغمة الرقم غير متاح للمحظورين</string>
+    <string name="sms_filter">فلترة الرسائل</string>
+    <string name="sms_keyword_filter">حظر الرسائل الإعلانية</string>
+    <string name="sms_keyword_filter_desc">حظر SMS اللي فيها كلمات مثل: خصم، عروض، كود</string>
     <string name="dnd_title">وضع عدم الإزعاج</string>
     <string name="block_unknown_only">حظر الأرقام غير المعروفة فقط</string>
     <string name="block_unknown_only_desc">السماح لجهات الاتصال فقط</string>
@@ -58,6 +71,12 @@
     <string name="dark_mode_desc">تفعيل الوضع الليلي</string>
     <string name="follow_system">اتباع نظام الجهاز</string>
     <string name="follow_system_desc">تغيير الوضع حسب إعدادات الجهاز</string>
+    <string name="privacy_title">الخصوصية</string>
+    <string name="biometric_lock">قفل التطبيق بالبصمة</string>
+    <string name="biometric_lock_desc">حماية قائمة المحظورين ببصمة الإصبع</string>
+    <string name="backup_title">النسخ الاحتياطي</string>
+    <string name="export_list">تصدير القائمة</string>
+    <string name="import_list">استيراد القائمة</string>
     <string name="danger_zone_title">منطقة الخطر</string>
     <string name="clear_all_data">مسح جميع البيانات</string>
     
@@ -91,13 +110,15 @@
     <string name="tour_settings_title">الإعدادات</string>
     <string name="tour_settings_desc">خصص التطبيق حسب احتياجاتك</string>
     
-    <!-- Permission Names -->
-    <string name="permission_phone">المكالمات</string>
-    <string name="permission_phone_desc">حظر المكالمات الواردة</string>
-    <string name="permission_sms">الرسائل</string>
-    <string name="permission_sms_desc">حظر الرسائل المزعجة</string>
-    <string name="permission_contacts">جهات الاتصال</string>
-    <string name="permission_contacts_desc">التحقق من الأرقام المعروفة</string>
-    <string name="permission_notifications">الإشعارات</string>
-    <string name="permission_notifications_desc">إشعارات المحاولات المحظورة</string>
+    <!-- Biometric -->
+    <string name="biometric_title">CallShield محمي</string>
+    <string name="biometric_subtitle">استخدم بصمة إصبعك للوصول إلى قائمة المحظورين</string>
+    <string name="biometric_button">فتح بالبصمة</string>
+    
+    <!-- Analysis -->
+    <string name="analysis_dialog_title">تحليل الإزعاج</string>
+    <string name="analysis_attempts">عدد المحاولات</string>
+    <string name="analysis_last_attempt">آخر محاولة</string>
+    <string name="analysis_very_annoying">هذا الرقم مزعج جداً! تحب تحظره نهائياً؟</string>
+    <string name="analysis_understood">فهمت</string>
 </resources>
