@@ -17,5 +17,9 @@ data class BlockedNumber(
     val unblockTime: Long? = null,
     val callAttempts: Int = 0,
     val lastAttemptTime: Long? = null,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val emergencyBypass: Boolean = false,
+    val bypassKeyword: String = "طوارئ",
+    val maxAttemptsBeforeBypass: Int = 3,
+    val bypassTimeWindow: Long = 120000 // 2 minutes in milliseconds
 )
