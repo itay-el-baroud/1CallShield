@@ -1,3 +1,7 @@
 <resources>
-    <style name="Theme.CallShield" parent="android:Theme.Material.NoActionBar" />
+    <style name="Theme.CallShield" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:navigationBarColor">@color/dark_background</item>
+    </style>
 </resources>
