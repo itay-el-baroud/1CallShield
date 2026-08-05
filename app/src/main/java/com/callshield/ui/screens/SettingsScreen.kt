@@ -71,6 +71,46 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 }
             }
 
+            // Emergency Bypass Section
+            SettingsSection(title = "كسر الحظر الطوارئ") {
+                SettingsSwitchItem(
+                    icon = Icons.Default.Emergency,
+                    title = "تفعيل كسر الحظر الطوارئ",
+                    subtitle = "فك الحظر لو اتصل نفس الرقم 3 مرات في دقيقتين",
+                    checked = settings?.emergencyBypass ?: false,
+                    onCheckedChange = { viewModel.updateEmergencyBypass(context, it) }
+                )
+                SettingsSwitchItem(
+                    icon = Icons.Default.Message,
+                    title = "كسر الحظر بكلمة السر",
+                    subtitle = "فك الحظر لو بعت SMS فيها كلمة 'طوارئ'",
+                    checked = settings?.keywordBypass ?: false,
+                    onCheckedChange = { viewModel.updateKeywordBypass(context, it) }
+                )
+            }
+
+            // Fake Disconnect Section
+            SettingsSection(title = "خدعة الخط المقفول") {
+                SettingsSwitchItem(
+                    icon = Icons.Default.PhoneDisabled,
+                    title = "تفعيل نغمة الخط المقفول",
+                    subtitle = "تشغيل نغمة 'الرقم غير متاح' للمحظورين",
+                    checked = settings?.fakeDisconnect ?: false,
+                    onCheckedChange = { viewModel.updateFakeDisconnect(context, it) }
+                )
+            }
+
+            // SMS Filter Section
+            SettingsSection(title = "فلترة الرسائل") {
+                SettingsSwitchItem(
+                    icon = Icons.Default.FilterAlt,
+                    title = "حظر الرسائل الإعلانية",
+                    subtitle = "حظر SMS اللي فيها كلمات مثل: خصم، عروض، كود",
+                    checked = settings?.smsKeywordFilter ?: false,
+                    onCheckedChange = { viewModel.updateSmsKeywordFilter(context, it) }
+                )
+            }
+
             // Do Not Disturb Section
             SettingsSection(title = "وضع عدم الإزعاج") {
                 SettingsSwitchItem(
@@ -111,6 +151,41 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                 )
             }
 
+            // Privacy Section
+            SettingsSection(title = "الخصوصية") {
+                SettingsSwitchItem(
+                    icon = Icons.Default.Fingerprint,
+                    title = "قفل التطبيق بالبصمة",
+                    subtitle = "حماية قائمة المحظورين ببصمة الإصبع",
+                    checked = settings?.biometricLock ?: false,
+                    onCheckedChange = { viewModel.updateBiometricLock(context, it) }
+                )
+            }
+
+            // Backup Section
+            SettingsSection(title = "النسخ الاحتياطي") {
+                Button(
+                    onClick = { viewModel.exportBlockedList(context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                ) {
+                    Icon(Icons.Default.Download, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("تصدير القائمة")
+                }
+                Button(
+                    onClick = { viewModel.importBlockedList(context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                ) {
+                    Icon(Icons.Default.Upload, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("استيراد القائمة")
+                }
+            }
+
             // Danger Zone
             SettingsSection(title = "منطقة الخطر") {
                 Button(
@@ -120,6 +195,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel()) {
                         .padding(16.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = BlockRed)
                 ) {
+                    Icon(Icons.Default.DeleteForever, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text("مسح جميع البيانات")
                 }
             }
