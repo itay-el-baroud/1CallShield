@@ -73,8 +73,11 @@ dependencies {
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.9.1")
     
-    // DataStore (للإعدادات)
+    // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    
+    // Biometric
+    implementation("androidx.biometric:biometric:1.1.0")
     
     // Testing
     testImplementation("junit:junit:4.13.2")
