@@ -21,5 +21,8 @@ data class BlockedNumber(
     val emergencyBypass: Boolean = false,
     val bypassKeyword: String = "طوارئ",
     val maxAttemptsBeforeBypass: Int = 3,
-    val bypassTimeWindow: Long = 120000 // 2 minutes in milliseconds
+    val bypassTimeWindow: Long = 120000,
+    val simSlot: Int = -1, // -1 means all SIMs, 0 = SIM1, 1 = SIM2
+    val simOperator: String = "",
+    val networkType: String = ""
 )
