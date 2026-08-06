@@ -5,12 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
 import android.util.Log
-import com.android.internal.telephony.ITelephony
 import com.callshield.data.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.reflect.Method
 
 class CallReceiver : BroadcastReceiver() {
     
@@ -27,7 +25,6 @@ class CallReceiver : BroadcastReceiver() {
         Log.d(TAG, "Call state: $state, Number: $phoneNumber")
         
         if (state == TelephonyManager.EXTRA_STATE_RINGING) {
-            // Incoming call - check if blocked
             checkAndBlockCall(context, phoneNumber)
         }
     }
@@ -41,12 +38,9 @@ class CallReceiver : BroadcastReceiver() {
                 if (blockedNumber != null && blockedNumber.blockCalls) {
                     Log.d(TAG, "Blocking call from: $phoneNumber")
                     
-                    // Block using ITelephony (Reflection)
-                    blockCallWithITelephony(context)
-                    
                     // Log the blocked call
                     db.callLogDao().insert(
-                        com.callshield.data.model.CallLog(
+                        com.callshield.data.CallLog(
                             phoneNumber = phoneNumber,
                             displayName = blockedNumber.displayName ?: phoneNumber,
                             callType = "BLOCKED",
@@ -60,26 +54,6 @@ class CallReceiver : BroadcastReceiver() {
             } catch (e: Exception) {
                 Log.e(TAG, "Error blocking call: ${e.message}")
             }
-        }
-    }
-    
-    private fun blockCallWithITelephony(context: Context) {
-        try {
-            val telephonyService = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-            
-            // Use reflection to access ITelephony
-            val telephonyClass = Class.forName(telephonyService.javaClass.name)
-            val method: Method = telephonyClass.getDeclaredMethod("getITelephony")
-            method.isAccessible = true
-            
-            val telephonyInterface = method.invoke(telephonyService)
-            val telephonyInterfaceClass = Class.forName(telephonyInterface.javaClass.name)
-            val endCallMethod: Method = telephonyInterfaceClass.getDeclaredMethod("endCall")
-            
-            endCallMethod.invoke(telephonyInterface)
-            Log.d(TAG, "Call ended via ITelephony")
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to block call via ITelephony: ${e.message}")
         }
     }
 }
