@@ -21,12 +21,13 @@ import androidx.core.net.toUri
 
 @Composable
 fun DialerScreen(
+    initialNumber: String = "",
     onNavigateToBlocked: () -> Unit = {},
     onNavigateToLogs: () -> Unit = {},
     onNavigateToSettings: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    var phoneNumber by remember { mutableStateOf("") }
+    var phoneNumber by remember { mutableStateOf(initialNumber) }
     var isLoading by remember { mutableStateOf(false) }
 
     Column(
