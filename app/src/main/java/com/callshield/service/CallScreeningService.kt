@@ -2,7 +2,6 @@ package com.callshield.service
 
 import android.telecom.Call
 import android.telecom.CallScreeningService
-import android.telecom.Connection
 import android.util.Log
 import com.callshield.data.AppDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -30,17 +29,15 @@ class CallShieldScreeningService : CallScreeningService() {
                 if (blockedNumber != null && blockedNumber.blockCalls) {
                     Log.d(TAG, "Blocking call from: $phoneNumber")
                     
-                    // Block the call completely
                     response.apply {
                         setDisallowCall(true)
                         setRejectCall(true)
-                        setSkipCallLog(false) // Keep log for records
+                        setSkipCallLog(false)
                         setSkipNotification(false)
                     }
                     
-                    // Log the blocked call
                     db.callLogDao().insert(
-                        com.callshield.data.model.CallLog(
+                        com.callshield.data.CallLog(
                             phoneNumber = phoneNumber,
                             displayName = blockedNumber.displayName ?: phoneNumber,
                             callType = "BLOCKED",
@@ -51,12 +48,11 @@ class CallShieldScreeningService : CallScreeningService() {
                         )
                     )
                 } else {
-                    // Allow the call
                     response.setDisallowCall(false)
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error screening call: ${e.message}")
-                response.setDisallowCall(false) // Allow on error
+                response.setDisallowCall(false)
             }
             
             respondToCall(callDetails, response.build())
