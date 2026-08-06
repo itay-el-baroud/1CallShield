@@ -40,15 +40,11 @@ class MainActivity : ComponentActivity() {
                         }
                         
                         composable("home") {
-                            HomeScreen(
-                                onNavigateBack = { navController.popBackStack() }
-                            )
+                            HomeScreen()
                         }
                         
                         composable("logs") {
-                            LogsScreen(
-                                onNavigateBack = { navController.popBackStack() }
-                            )
+                            LogsScreen()
                         }
                         
                         composable("settings") {
